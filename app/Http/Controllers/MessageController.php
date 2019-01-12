@@ -4,22 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Message;
 use App\User;
-use Auth;
 use Illuminate\Http\Request;
+use Auth;
 
 class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param  int @receiver_id
      * @return \Illuminate\Http\Response
      */
-    public function index($id, $message_id = -1)
+    public function index($receiver_id, $receiver_name)
     {
-        $messages = Message::where('receiver_id', $id)->paginate(10);
-        return view('inbox', compact('messages', 'message_id'));
+        $messages = Message::where('receiver_id', $receiver_id)->paginate(10);
+        
+        return view('user.inbox', compact('messages'));
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -29,30 +31,32 @@ class MessageController extends Controller
     {
         //
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int $receiver_id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $user_id)
+    public function store(Request $request, $receiver_id)
     {
         $messages = New Message;
         $messages->content = $request->content;
         $messages->sender_id = Auth::user()->id;
-        $messages->receiver_id = $user_id;
+        $messages->receiver_id = $receiver_id;
         $messages->save();
+
         return back();
     }
-    
+
     /**
      * Display the specified resource.
      *
-     * @param  \App\Message  $message
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Message $message)
+    public function show($id)
     {
         //
     }
@@ -60,30 +64,30 @@ class MessageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Message  $message
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Message $message)
+    public function edit($id)
     {
         //
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Message  $message
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Message $message)
+    public function update(Request $request, $id)
     {
         //
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Message  $message
+     * @param  int  $message_id
      * @return \Illuminate\Http\Response
      */
     public function destroy($message_id)
@@ -91,19 +95,5 @@ class MessageController extends Controller
         $message = Message::find($message_id);
         $message->delete();
         return back();
-    }
-    
-    public function reply($id, $message_id = -1)
-    {
-        return $this->index($id, $message_id);
-    }
-
-    public function sendReply(Request $request, $user_id) {
-        $messages = New Message;
-        $messages->content = $request->content;
-        $messages->sender_id = Auth::user()->id;
-        $messages->receiver_id = $user_id;
-        $messages->save();
-        return $this->index(Auth::user()->id, -1);
     }
 }

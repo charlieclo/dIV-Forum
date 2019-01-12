@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+<!-- Page for Resetting Password based on Email Token -->
 @section('content')
 <!-- Container for Password Reset Page -->
 <div class="container">

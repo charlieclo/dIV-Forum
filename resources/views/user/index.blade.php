@@ -6,18 +6,26 @@
     }
 </style>
 
+<!-- Page for Admin to View All Users List -->
 @section('content')
+<!-- Container for User Index -->
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            <!-- Panel for Viewing Users List -->
             <div class="panel panel-default">
+                <!-- Panel Header -->
                 <div class="panel-heading" style="padding-bottom: 5px; padding-top: 5px;">
                     <label style="padding-top: 10px;">List of User</label> 
+                    <!-- Add New User Button -->
                     <a href="{{ url('user/create') }}" class="pull-right"><button type="submit" class="btn btn-success">Add New User</button></a>
                 </div>
                 
-                <div class="panel-body table-responsive">    
+                <!-- Panel Body with Responsive Table -->
+                <div class="panel-body table-responsive">
+                    <!-- Users List Table -->    
                     <table class="table">
+                        <!-- Table Head -->
                         <thead>
                             <tr>
                                 <th class="text-center">ID</th>
@@ -33,6 +41,7 @@
                             </tr>
                         </thead>
                   
+                        <!-- Table Body -->
                         <tbody>
                             @foreach($users as $id => $user)
                                 <tr>
@@ -53,7 +62,9 @@
                                     <td class="text-center">{{$user->dob}}</td>
                                     <td class="text-center">{{$user->gender}}</td>
                                     <td class="text-center">
+                                        <!-- Edit User Button -->
                                         <a href="{{ url('user/'.$user->id.'/edit') }}"><button type="button" class="btn btn-warning"><i class="fas fa-edit"></i></button></a>
+                                        <!-- Delete User Button -->
                                         <a href="{{ url('user/'.$user->id.'/delete') }}"><button type="submit" class="btn btn-danger"><i class="fas fa-times"></i></button></a>
                                     </td>
                                 </tr>

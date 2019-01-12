@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+<!-- Page for Inputting Email to be Sent an Email including Reset Password Link -->
 @section('content')
 <!-- Container for Send Password Reset Link Page -->
 <div class="container">

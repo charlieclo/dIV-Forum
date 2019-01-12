@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
-use Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Auth;
 
 class RegisterController extends Controller
 {
@@ -30,7 +30,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.
@@ -50,17 +50,7 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'min:6', 'confirmed'],
-            'phone' => ['required','numeric'],
-            'address' => ['required'],
-            'dob' => ['required'],
-            'gender'=>['required'],
-            'avatar'=>'image|mimes:jpg, jpeg,png',
-            'agree' =>['required'],
-        ]);
+       //Has been implemented in function store(Request $request)
     }
 
     /**
@@ -71,40 +61,37 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'phone' =>$data['phone'],
-            'address' =>$data['address'],
-            'dob' =>$data['dob'],
-            'gender' => $data['gender'],
-            'avatar' => $data['avatar'],
-            'agree' => $data['agree'],
-            'plus_popularity' => 0,
-            'minus_popularity' => 0,
-        ]);
+        //Has been implemented in function store(Request $request)
     }
  
-
-    public function store_avatar(Request $request)
+    /**
+     * Create a new user instance after a valid registration.
+     * 
+     * @param  Request $request
+     * @return \App\User
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
-        
+        // Validator to Validate all Requests
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
             'phone' => 'required|numeric',
-            'address' => 'required',
-            'dob' => 'required',
-            'gender'=>'required',
-            'agree' =>'required',
-        ]);
+            'address' => array('required', 'regex:/(^[A-Za-z 0-9.,]+ Street$)/'),
+            'dob' => 'required|before: 12 years ago',
+            'gender'=> 'required',
+            'agree' => 'required',
+        ], ['before' => 'Age must be more than 12',
+            'regex' => 'Address must be ended with Street']);
 
-        if($validator->fails()){
+        //Condition if Validator Fails
+        if($validator->fails()) {
             return back()->withErrors($validator);
         }
 
+        //Condition if Avatar was Inputted for Registry
         if($request->hasFile('avatar'))
         {   
             $image = $request->file('avatar');
@@ -112,7 +99,6 @@ class RegisterController extends Controller
             $path = public_path('/avatars');
             $image->move($path, $input['imagename']);
             
-            $default = 0;
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -123,16 +109,16 @@ class RegisterController extends Controller
                 'gender' => $request->gender,
                 'avatar' => $input['imagename'],
                 'agree' => $request->agree,
-                'plus_popularity' => $default,
-                'minus_popularity' => $default,
+                'good_vote' => 0,
+                'bad_vote' => 0,
             ]);
         }
 
+        //Condition if Avatar was not Inputted for Registry
         else
         {   
             $avatar = "default.png";
 
-            $default = 0;
             User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -143,10 +129,11 @@ class RegisterController extends Controller
                 'gender' => $request->gender,
                 'avatar' => $avatar,
                 'agree' => $request->agree,
-                'plus_popularity' => $default,
-                'minus_popularity' => $default,
+                'good_vote' => 0,
+                'bad_vote' => 0,
             ]);
         }
+        
         return redirect()->route('login');
     }
 }

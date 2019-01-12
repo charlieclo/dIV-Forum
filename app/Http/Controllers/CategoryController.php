@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Category;
-use App\User;
 use Illuminate\Http\Request;
+use Auth;
 
 class CategoryController extends Controller
 {
@@ -16,29 +15,30 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        if(Auth::user() != null) {
-            if(Auth::user()->admin == 1) {
-                 $categories = Category::paginate(5);
-                return view('category.index', compact('categories'));
-            }
-
-            else {
-                return redirect('forum');
-            }
+        if(Auth::user()->admin == 1) {
+            $categories = Category::paginate(5);
+            
+            return view('category.index', compact('categories'));
         }
 
-        return redirect()->route('login');
-       
+        else {
+            return redirect('forum');
+        }  
     }
 
     /**
      * Show the form for creating a new resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $categories = New Category;
+        $categories->name = $request->name;
+        $categories->save();
         
+        return back();
     }
 
     /**
@@ -49,19 +49,16 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $categories = New Category;
-        $categories->name = $request->name;
-        $categories->save();
-        return back();
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Category  $category
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show($id)
     {
         //
     }
@@ -69,12 +66,13 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Category  $category
+     * @param  int  $category_id
      * @return \Illuminate\Http\Response
      */
     public function edit($category_id)
     {
         $categories = Category::find($category_id);
+        
         return view('category.edit', compact('categories'));
     }
 
@@ -82,7 +80,7 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Category  $category
+     * @param  int  $category_id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $category_id)
@@ -90,19 +88,21 @@ class CategoryController extends Controller
         $categories = Category::find($category_id);
         $categories->name = $request->name;
         $categories->save();
+        
         return redirect('category');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Category  $category
+     * @param  int  $category_id
      * @return \Illuminate\Http\Response
      */
     public function destroy($category_id)
     {
         $categories = Category::find($category_id);
         $categories->delete();
+        
         return back();
     }
 }

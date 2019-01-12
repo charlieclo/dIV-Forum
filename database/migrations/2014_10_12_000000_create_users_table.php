@@ -26,6 +26,8 @@ class CreateUsersTable extends Migration
             $table->string('avatar')->default('default.jpg');
             $table->boolean('admin')->default(0);
             $table->string('agree');
+            $table->integer('good_vote')->default(0);
+            $table->integer('bad_vote')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

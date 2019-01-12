@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+<!-- Page for Guest to Login into User or Admin -->
 @section('content')
 <!-- Container for Register Page -->
 <div class="container">
@@ -15,7 +16,7 @@
                 <!-- Register Panel Body -->
                 <div class="panel-body">
                     <!-- Register Form -->
-                    <form class="form-horizontal" method="POST" action="{{ route('login') }}">
+                    <form id="login-form" class="form-horizontal" method="POST" action="{{ route('login') }}">
                         <!-- CSRF Field --> {{ csrf_field() }}
 
                         <!-- Form Group for E-Mail Address -->
@@ -55,7 +56,7 @@
                             <div class="col-md-6 col-md-offset-4">
                                <div class="checkbox">
                                     <label>
-                                        <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
+                                        <input id="remember" type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> Remember Me
                                     </label>
                                 </div>
                             </div>
@@ -64,7 +65,7 @@
                         <!-- Login Button and Forgot Password Button -->
                         <div class="form-group">
                             <div class="col-md-8 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" name="login" class="btn btn-primary">
                                     Login
                                 </button>
 

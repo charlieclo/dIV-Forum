@@ -1,30 +1,29 @@
 @extends('layouts.app')
 
-<!-- Page for Guest to Register into User -->
+<!-- Page for User to Edit Profile -->
 @section('content')
-<!-- Container for Register Page -->
+<!-- Container for Edit Profile -->
 <div class="container">
-    <!-- Reserve Row for Register Panel -->
     <div class="row">
-        <!-- Set Column Size and Position for Register Panel -->
         <div class="col-md-8 col-md-offset-2">
-            <!-- Register Panel -->
+            <!-- Panel for Edit Profile -->
             <div class="panel panel-default">
-                <!-- Register Panel Header -->
-                <div class="panel-heading">Register</div>
+                <!-- Panel Header -->
+                <div class="panel-heading">User Data</div>
 
-                <!-- Register Panel Body -->
+                <!-- Panel Body -->
                 <div class="panel-body">
-                    <!-- Register Form -->
-                    <form class="form-horizontal" method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
+                    <!-- Edit Profile Form -->
+                    <form class="form-horizontal" method="POST" action="{{ url('profile/'.$user->id.'/update') }}" enctype="multipart/form-data">
                         <!-- CSRF Field --> {{ csrf_field() }}
-
+                        <!-- Method Field : PUT --> {{ method_field('PUT') }}
+                        
                         <!-- Form Group for Name -->
                         <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required autofocus>
+                                <input id="name" type="text" class="form-control" name="name" value="{{ $user->name }}" required autofocus>
 
                                 <!-- Error Handler for Name -->
                                 @if ($errors->has('name'))
@@ -40,7 +39,7 @@
                             <label for="email" class="col-md-4 control-label">E-Mail Address</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                                <input id="email" type="email" class="form-control" name="email" value="{{ $user->email }}" required>
 
                                 <!-- Error Handler for E-Mail  Address -->
                                 @if ($errors->has('email'))
@@ -51,7 +50,7 @@
                             </div>
                         </div>
 
-                        <!-- Form Group for Password -->
+                         <!-- Form Group for Password -->
                         <div class="form-group">
                             <label for="password" class="col-md-4 control-label">Password</label>
 
@@ -75,13 +74,13 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
-
+                    
                         <!-- Form Group for Phone Number -->
                         <div class="form-group">
                             <label for="phone" class="col-md-4 control-label">Phone</label>
 
                             <div class="col-md-6">
-                                <input id="phone" type="text" class="form-control" name="phone" required>
+                                <input id="phone" type="text" class="form-control" name="phone" value="{{ $user->phone }}" required>
                                 
                                 <!-- Error Handler for Phone Number -->
                                 @if ($errors->has('phone'))
@@ -97,7 +96,7 @@
                             <label for="address" class="col-md-4 control-label">Address</label>
 
                             <div class="col-md-6">
-                                <input id="address" type="text" class="form-control" name="address" required>
+                                <input id="address" type="text" class="form-control" name="address" value="{{ $user->address }}" required>
                                 
                                 <!-- Error Handler for Address -->
                                 @if ($errors->has('address'))
@@ -105,7 +104,6 @@
                                         <strong>{{ $errors->first('address') }}</strong>
                                     </span>
                                 @endif
-
                             </div>
                         </div>
 
@@ -114,7 +112,7 @@
                             <label for="dob" class="col-md-4 control-label">Birthday</label>
 
                             <div class="col-md-6">
-                                <input id="dob" type="date" class="form-control" name="dob" required>
+                                <input id="dob" type="date" class="form-control" name="dob" value="{{ $user->dob }}" required>
                                 
                                 <!-- Error Handler for Date of Birthday -->
                                 @if ($errors->has('dob'))
@@ -122,7 +120,6 @@
                                         <strong>{{ $errors->first('dob') }}</strong>
                                     </span>
                                 @endif
-
                             </div>
                         </div>
 
@@ -131,8 +128,15 @@
                             <label for="gender" class="col-md-4 text-right">Gender</label>
 
                             <div class="col-md-6">
-                                <input id="genderMale" type="radio" class="radio-inline" name="gender" value="Male" required> Male
-                                <input id="genderFemale" type="radio" class="radio-inline" name="gender" value="Female" required> Female
+                                <!-- Condition for User Gender is Male -->
+                                @if ($user->gender == 'Male')
+                                    <input id="genderMale" type="radio" class="radio-inline" name="gender" value="Male" checked> Male
+                                    <input id="genderFemale" type="radio" class="radio-inline" name="gender" value="Female"> Female
+
+                                @else
+                                    <input id="genderMale" type="radio" class="radio-inline" name="gender" value="Male"> Male
+                                    <input id="genderFemale" type="radio" class="radio-inline" name="gender" value="Female" checked> Female
+                                @endif
 
                                 <!-- Error Handler for Gender -->
                                 @if ($errors->has('gender'))
@@ -140,51 +144,34 @@
                                         <strong>{{ $errors->first('gender') }}</strong>
                                     </span>
                                 @endif
-
                             </div>
                         </div>
 
                         <!-- Form Group for Photo -->
                         <div class="form-group">
-                                <label for="avatar" class="col-md-4 control-label">Photo</label>
-    
-                                <div class="col-md-6">
-                                    <input type="file" class="form-control" name="avatar">
-                                    
-                                    <!-- Error Handler for Photo -->
-                                    @if ($errors->has('avatar'))
-                                        <span class="help-block" role="alert">
-                                            <strong>{{ $errors->first('avatar') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                        </div>
-
-                        <!-- Form Group for Agreement -->
-                        <div class="form-group">
-                            <label for="agree" class="col-md-4 control-label"><input id="agree" type="checkbox" class="checkbox-inline" name="agree" value="agree" required></label>
+                            <label for="avatar" class="col-md-4 control-label">Photo</label>
 
                             <div class="col-md-6">
-                                By registering to this website, I agree term and condition
+                                <input type="file" class="form-control" name="avatar" value="{{ $user->avatar }}">
+                                
+                                <!-- Error Handler for Photo -->
+                                @if ($errors->has('avatar'))
+                                    <span class="help-block" role="alert">
+                                        <strong>{{ $errors->first('avatar') }}</strong>
+                                    </span>
+                                @endif
                             </div>
-
-                            <!-- Error Handler for Agreement -->
-                            @if ($errors->has('agree'))
-                                <span class="help-block" role="alert">
-                                    <strong>{{ $errors->first('agree') }}</strong>
-                                </span>
-                            @endif
                         </div>
-
-                        <!-- Register Button -->
+                   
+                        <!-- Profile Update Button -->
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Register
+                                    Update
                                 </button>
                             </div>
                         </div>
-                    </form>
+                   </form>
                 </div>
             </div>
         </div>

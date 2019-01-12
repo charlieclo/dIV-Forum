@@ -26,22 +26,28 @@
     }
 </style>
 
+<!-- Page for Viewing List of Forums to Guest, User, or Admin -->
 @section('content')
+<!-- Container for Forum Index -->
 <div class="container" >
     <div class="row">    
         <div class="col-md-12">
-            <form class="form-horizontal" method="POST" role="search" action="{{ url('search') }}">
-                {{ csrf_field() }}
+            <!-- Forum Search Box -->
+            <form class="form-horizontal" method="POST" role="search" action="{{ url('forum/search') }}">
+                <!-- CSRF Field --> {{ csrf_field() }}
                 
+                <!-- Input Group for Forum Search Box -->
                 <div class= "input-group">
                     <input id="search" type="text" class="form-control" name="search" placeholder="Search Forum by Title or Category Name" required>
                     
+                    <!-- Error Handler for Forum Search Box -->
                     @if ($errors->has('search'))
                         <span class="help-block" role="alert">
                             <strong>{{ $errors->first('search') }}</strong>
                         </span>
                     @endif
 
+                    <!-- Search Button -->
                     <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Search</button>
                     </span>
@@ -49,18 +55,23 @@
             </form>
         </div>
         
+        <!-- Condition for No Forum -->
         @if(count($forums) == 0)
            <div class="text-center"><label>No Forum(s) Available</label></div>
         
         @else
+            <!-- For Each Forum in Forums Table -->
             @foreach ($forums as $forum)
                 <div class="col-md-12">
+                    <!-- Panel for Viewing List of Forums -->
                     <div class="panel panel-default">
+                        <!-- Panel Header -->
                         <div class="panel-heading">
                             <a href="{{ url('thread/'.$forum->id) }}">
                                 <b>{{ $forum->title }}</b>
                             </a>
                             
+                            <!-- Condition for Forum Status : Open -->
                             @if ($forum->status == 'open')
                                 <label class="label label-success pull-right">Open</label>
                             
@@ -69,16 +80,18 @@
                             @endif
                             
                             <br>
-                            Category  : {{$forum->category->name}}
+                            Category  : {{ $forum->category->name }}
                             <br>
-                            Posted at : {{$forum->created_at}}
+                            Posted at : {{ date("d-M-Y H:i:s", strtotime($forum->created_at)) }}
                         </div>
 
+                        <!-- Panel Body -->
                         <div class="panel-body">{{ $forum->content }}</div>
                     </div>
                 </div>
             @endforeach       
 
+            <!-- Pagination Links -->
             <div class="col-md-12 text-center">
                 {{ $forums->links() }}
             </div>
@@ -86,7 +99,9 @@
     </div>
 </div>
 
+<!-- Condition for Aunthenticated User -->
 @auth
+    <!-- Forum Add Button -->
     <a href="{{ url('forum/create') }}"><button class="btn-circle"><i class="fas fa-plus"></i></button></a>
 @endauth
 @endsection
