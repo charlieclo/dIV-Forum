@@ -92,23 +92,22 @@
                                        
                                     <!-- Panel Body -->
                                     <div class="panel-body">
-                                        <!-- Condition for Good Vote has Occured and Vote Sender is Authenticated User's ID and Vote Receiver is User's ID that profile was Shown -->
-                                        @if($voter != null && $voter->vote_sender == Auth::user()->id && $voter->vote_receiver == $user->id && $voter->status == 1)
-                                            <!-- Good Vote Pressed Button -->
+                                        
+                                        @if($voter != null && $voter->vote_sender == Auth::user()->id && 
+                                            $voter->vote_receiver == $user->id && 
+                                            $voter->status == 1)
                                             <a href="{{ url('vote/'.Auth::user()->id.'/'.$user->id.'/1') }}"><button type="button" class="btn btn-outline-success"><i class="fas fa-plus"></i></button></a>
                                         
                                         @else
-                                            <!-- Good Vote Unpressed Button -->
                                             <a href="{{ url('vote/'.Auth::user()->id.'/'.$user->id.'/1') }}"><button type="button" class="btn btn-success"><i class="fas fa-plus"></i></button></a>
                                         @endif
 
-                                        <!-- Condition for Bad Vote has Occured and Vote Sender is Authenticated User's ID and Vote Receiver is User's ID that profile was Shown -->
-                                        @if($voter != null && $voter->vote_sender == Auth::user()->id && $voter->vote_receiver == $user->id && $voter->status == 0)
-                                            <!-- Bad Vote Pressed Button -->
+                                        @if($voter != null && $voter->vote_sender == Auth::user()->id && 
+                                            $voter->vote_receiver == $user->id && 
+                                            $voter->status == 0)
                                             <a href="{{ url('vote/'.Auth::user()->id.'/'.$user->id.'/0') }}"><button type="button" class="btn btn-outline-danger"><i class="fas fa-minus"></i></button></a>
                                         
                                         @else
-                                            <!-- Bad Vote Unpressed Button -->
                                             <a href="{{ url('vote/'.Auth::user()->id.'/'.$user->id.'/0') }}"><button type="button" class="btn btn-danger"><i class="fas fa-minus"></i></button></a>
                                         @endif
                                     </div>
@@ -120,27 +119,19 @@
             </div>
         </div>
 
-        <!-- Condition for Aunthenticated User -->
         @auth
-            <!-- Condition for Authenticated User ID is same like User;s ID that will be Shown -->
             @if(Auth::user()->id != $user->id)
-                <!-- Panel for Message -->
                 <div class="panel panel-default">
-                    <!-- Panel Header -->
                     <div class="panel-heading">Message</div>
                     
-                    <!-- Panel Body -->
                     <div class="panel-body">
-                        <!-- Message Form -->
                         <form class="form-horizontal" method="POST" action="{{ url('message/'.$user->id) }}" enctype="multipart/form-data">
-                            <!-- CSRF Field --> {{ csrf_field() }}
+                            {{ csrf_field() }}
                         
-                            <!-- Form Group for Message Content -->
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <textarea type="text" name="content" class="form-control" required></textarea>
                                     
-                                    <!-- Error Handler for Message Content -->
                                     @if ($errors->has('content'))
                                         <span class="help-block" role="alert">
                                             <strong>{{ $errors->first('content') }}</strong>
@@ -149,7 +140,6 @@
                                 </div>
                             </div>
 
-                            <!-- Send Message Button -->
                             <div class="form-group">
                                 <div class="col-md-12 text-right">
                                     <button type="submit" class="btn btn-primary">
